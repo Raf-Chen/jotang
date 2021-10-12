@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+       
+    <meta charset="UTF-8">
+       
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+       
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My todolist</title>
+        <style>
+        .center {
+            width: 1000px;
+            background-color: rgb(131, 166, 231);
+            font-size: 40px;
+            margin: 0 auto;
+        }
+
+        ul{
+            list-style: none;
+
+        }
+        li{
+            height: 50px;
+            border: 1px solid #ddd;
+
+        }
+
+        li:hover{
+            background-color: rgb(166, 238, 212);
+        }
+
+        .centertodobox {
+            width: 1000px;
+            background-color: rgb(171, 201, 190);
+            margin: 0 auto;
+        }
+
+        #input {
+            width: 400px;
+
+            height: 30px;
+        }
+
+        .title {
+            font-weight: 900;
+        }
+
+        .check{
+            width: 20px;
+            height: 20px;
+        }
+
+        .delete {
+            float: right;
+            height: 40px;
+            width: 80px;
+            background-color: blanchedalmond;
+        }
+
+        .light {
+            margin-top: 100px;
+            margin-left: 1000px;
+            width: 140px;
+            height: 65px;
+        }
+
+
+
+
+        footer {
+            margin-left: 600px;
+        }
+    </style>
+         
+
+
+
+</head>
+
+<body>
+        <header>
+                <div class="center">
+                        <span class="title">Todolist</span>
+                        <input type="text" placeholder="快来规划自己的todo吧！" id="input">
+                    </div>
+            </header>
+    <div class="centertodobox">
+            <h2>未完成</h2>
+            <ul class="todo">
+                    <li>
+                            <input type="checkbox" class="check">
+                            <span>todo的内容</span>
+                            <button class="delete">删除</button>
+                        </li>
+                </ul>
+
+            <h2>已完成</h2>
+            <ul class="done">
+                    <li>
+                            <input type="checkbox">
+                            <span>done的内容</span>
+                            <button class="delete">删除</button>
+                        </li>
+                </ul>
+
+          <button class="light">黑夜模式</button>
+
+
+
+    </div>
+
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <script>  
+        var todolist = localStorage.getItem("todolist");
+        if (todolist) {
+            todolist = JSON.parse(todolist);
+            render();
+        } else {
+            todolist = [];
+        }
+
+        $("#input").on("change", function () {
+            todolist.push({
+                content: this.value,
+                done: false,
+                id: todolist.length,
+            })
+
+            console.log(todolist);
+            this.value = "";
+            render();
+        })
+
+    function changeDone(x){
+        todolist[x].done=event.target.checked;
+        render();
+    }
+
+
+
+        $(".centertodobox").on("click", ".delete", function () {
+            console.log(this.dataset.index)
+            todolist.splice(this.dataset.index, 1);
+            render();
+        })
+
+        
+
+
+        function render() {
+            $(".done").html("");
+            $(".todo").html("");
+
+            for (var i = 0; i < todolist.length; i++) {
+                if (todolist[i].done) {
+                    $(".done").append(
+                        ` <li>
+            <input type="checkbox" class="check"  checked onchange="changeDone(${i})">
+            <span>${todolist[i].content}</span>
+            <button data-index="${i}" class="delete">删除</button>
+        </li>`);
+                } else {
+                    $(".todo").append(
+                        ` <li>
+            <input type="checkbox" class="check" onchange="changeDone(${i})">
+            <span>${todolist[i].content}</span>
+            <button data-index="${i}" class="delete">删除</button>
+        </li>`);
+
+                }
+            }
+        }
+
+        window.onbeforeunload = function () {
+            localStorage.setItem("todolist", JSON.stringify(todolist));
+        }
+
+
+
+        var light = 1
+        $(".light").click(function () {
+            if (light == 1) {
+                light = 0
+                document.getElementsByClassName("light")[0].innerHTML = "白天模式"
+                $(".centertodobox").css("background-color", "rgb(62, 63, 62)")
+                $(".centertodobox").css("color", "white")
+                $("body").css("background-color", "black")
+                $(".delete").css("background-color", "rgb(82, 80, 77)")
+                $(".delete").css("color", "white")
+
+
+            } else {
+                light = 1
+                document.getElementsByClassName("light")[0].innerHTML = "黑夜模式"
+                $(".centertodobox").css("background-color", "rgb(171, 201, 190")
+                $(".centertodobox").css("color", "black")
+                $("body").css("background-color", "white")
+                $(".delete").css("background-color", "blanchedalmond")
+                $(".delete").css("color", "black")
+
+            }
+        })
+         
+
+
+
+
+
+    </script>
+       
+</body>
+
+</html>
